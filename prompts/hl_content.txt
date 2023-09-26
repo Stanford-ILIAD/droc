@@ -1,0 +1,26 @@
+Object state: fridge(closed), green apple(on table), red apple(on table)
+Instruction: put the apple in the fridge.
+Response:
+{
+  "1": "Open the fridge.",
+  "2": ["Pick up apple_x.", {"apple": ["green apple", "red apple"]}], 
+  "3": "Put apple_x into the fridge.",
+  "4": "Close the fridge."
+}
+
+Object state: cabinet(closed)
+Instruction: open the top white cabinet
+Response:
+{
+  "1": ["Open the cabinet.", {"top white cabinet: ["cabinet"]}]
+}
+
+Object state: N/A
+Instruction: put the spoon into the bottom black shelf
+Response:
+{
+  "1": "Open the bottom black shelf.",
+  "2": "Pick up the spoon.",
+  "3": "Put the spoon into the bottom black shelf.",
+  "4": "Close the bottom black shelf."
+}

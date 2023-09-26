@@ -1,0 +1,8 @@
+Plan: {'1': 'Pick up apple_1.', '2': 'Open fridge_1.', '3': 'Put apple_x into fridge_x.', '4': 'Close fridge_x.'}
+Object state: fridge_1(open), fridge_2(closed), apple_1(on table), apple_2(on table)
+Output: 
+{
+    "1": "Pick up apple_1.",
+    "2": "Put apple_1 into fridge_1",
+    "3": "Close fridge_1"
+}

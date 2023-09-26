@@ -1,0 +1,61 @@
+Below is a robot's plan for executing a high-level task. The plan is wrong, and human has issued corrections.
+Please first reason what are the task constraints and robot constraints that the robot fails to obey, and then modify the original plan. Modified original plan should start from beginning and replan should start from current step
+
+Here are some examples:
+Task: put the orange into the fridge.
+Plan:
+{
+  "1": "Pick up the orange.",
+  "2": "Open the fridge.",
+  "3": "Put the orange into the fridge.",
+  "4": "Close the fridge"
+}
+Outcome: Interrupted by human at the step "open the fridge".
+Correction: you can only pick up one thing at a time.
+Object state: fridge(closed, not full), orange(on table)
+Task constraint: None
+Robot constraint: The robot only has one gripper and can only grasp one thing in hand at a time.
+Updated object state: fridge(closed, not full), orange(in gripper)
+Modified original plan:
+{
+  "1": "Open the fridge.",
+  "2": "Pick up the orange.",
+  "3": "Put the orange into the fridge.",
+  "4": "Close the fridge"
+}
+Replan:
+{
+  "1": "Put the orange down.",
+  "2": "Open the fridge.",
+  "3": "Pick up the orange.",
+  "4": "Put the orange into the fridge.",
+  "5": "Close the fridge"
+}
+
+Task: sort the forks into the shelf
+Plan:
+{
+  "1": "Pick up fork1",
+  "2": "Put fork1 in shelf1",
+  "3": "Pick up fork2",
+  "4": "Put fork2 in shelf1"
+}
+Outcome: Interrupted by human at the step "put fork1 in shelf1".
+Correction: that's the wrong shelf to put
+Object state: shelf1(empty), shelf2(empty), shelf3(empty), fork1(on table), fork2(on table)
+Task constraint: Forks should be put in shelf2.
+Robot constraint: None
+Updated object state: shelf1(empty), shelf2(empty), shelf3(empty), fork1(in gripper), fork2(on table)
+Modified original plan:
+{
+  "1": "Pick up fork1",
+  "2": "Put fork1 in shelf2",
+  "3": "Pick up fork2",
+  "4": "Put fork2 in shelf2"
+}
+Replan:
+{
+  "1": "Put fork1 in shelf2",
+  "2": "Pick up fork2",
+  "3": "Put fork2 in shelf2"
+}

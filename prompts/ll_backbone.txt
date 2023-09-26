@@ -1,0 +1,13 @@
+Imagine you are programming a robot equipped with a two-fingered gripper for grasping objects to complete certain tasks. The robot has several functions at its disposal:
+
+1. move_gripper_to_pose(pos, ori)
+2. get_task_pose(task_name)
+3. parse_pos(pos_description)
+4. open_gripper(width=1)
+5. close_gripper(width=0)
+6. get_current_state()
+7. reset_to_default_pose()
+
+Here are some examples to use above functions.
+
+{}

@@ -1,0 +1,72 @@
+Imagine you are programming a robot equipped with a two-fingered gripper for grasping objects to complete certain tasks. The robot has several functions at its disposal:
+
+1. move_gripper_to_pose(pos, ori)
+2. get_task_pose(task_name)
+3. parse_pos(pos_description)
+4. parse_ori(ori_description)
+5. open_gripper(width=1)
+6. close_gripper(width=0)
+7. get_current_state()
+8. reset_to_default_pose()
+9. change_reference_frame(wrong_direction, correct_direction)
+
+Here are some examples to use above functions.
+
+# Task: tilt up a little bit and rotate clockwise 45 degrees
+current_pos, current_ori = get_current_state()
+target_ori = parse_ori(f"tilt up a little bit relative to {current_ori}.")
+move_gripper_to_pose(current_pos, target_ori)
+target_ori_2 = parse_ori(f"rotate clockwise 45 degrees relative to {target_ori}.")
+move_gripper_to_pose(current_pos, target_ori_2)
+
+# Task: move forward a little bit
+current_pos, current_ori = get_current_state()
+target_pos = parse_pos(f"a point a little bit forward to {current_pos}")
+move_gripper_to_pose(target_pos, current_ori)
+
+# Task: move down and put down the pen.
+current_pos, current_ori = get_current_state()
+target_pos = parse_pos(f"a point a bit down to {current_pos}")
+move_gripper_to_pose(target_pos, current_ori)
+open_gripper()
+
+# Task: move towards the white drawer a little bit
+current_pos, current_ori = get_current_state()
+white_drawer_pos, white_drawer_ori = get_task_pose("move towards the white drawer a little bit")
+target_pos = parse_pos(f"a point a little bit towards {white_drawer_pos}")
+move_gripper_to_pose(target_pos, current_ori)
+
+# Task: move along the red block 3cm
+current_pos, current_ori = get_current_state()
+block_pos, block_ori = get_task_pose("move along the red block 3cm")
+target_pos = parse_pos(f"a point a little bit towards {block_pos}")
+move_gripper_to_pose(target_pos, current_ori)
+
+# Task: that's forward. you should move right.
+change_reference_frame('forward', 'right')
+current_pos, current_ori = get_current_state()
+target_pos = parse_pos(f"a point right to {current_pos}")
+move_gripper_to_pose(target_pos, current_ori)
+open_gripper()
+
+# Task: flip the cup
+# Assume the cup is already in the hand.
+current_pos, current_ori = get_current_state()
+target_ori = parse_ori(f"rotate clockwise 180 degrees relative to {current_ori}")
+move_gripper_to_pose(current_pos, target_ori)
+
+# Task: the gripper should be oriented parallel to the table
+current_pos, current_ori = get_current_state()
+target_ori = parse_ori(f"tilt to horizontal")
+move_gripper_to_pose(current_pos, target_ori)
+
+You are provided with a program, its outcome and human's corrective feedback. The program and the outcome are only meant to provide you the context to implement human's feedback. You don't need to continue the given program.
+You have access to the variables defined in the previous code.
+
+The robot's current task is: "[]".
+
+Respond in the following format:
+Response:
+'''
+...
+'''

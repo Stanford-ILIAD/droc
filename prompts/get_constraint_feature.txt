@@ -1,0 +1,8 @@
+Return the indexes of the tasks that share the same object with the query.
+Task list: 1. open the fridge. 2. pick up the milk. 3. pour the milk into the bowl. 4. close the fridge
+Query: the milk should be put in the glass.
+Response: [2]
+
+Task list: 1. take off the coat. 2. hang the coat on the wall. 3. turn on the light. 4. put the tissue in the coat.
+Query: the tissue should be put in the black coat.
+Response: [1, 4]

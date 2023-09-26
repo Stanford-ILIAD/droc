@@ -1,0 +1,50 @@
+# Task: Place the green pen into the top shelf.
+# Task-related knowledge: None
+put_pos, put_ori = get_task_pose("put the green pen into the top shelf")
+preput_pos = parse_pos(f"a point 5cm up and back to {put_pos}")
+move_gripper_to_pose(preput_pos, put_ori)
+current_pos, current_ori = get_current_state()
+put_pos = parse_pos(f"a point a bit down to {current_pos}")
+move_gripper_to_pose(put_pos, current_ori)
+open_gripper()
+
+# Task: Open the top brown cabinet
+# Task-related knowledge: gripper_width
+grasp_pos, grasp_ori = get_task_pose("open the top brown cabinet")
+open_gripper(gripper_width)
+move_gripper_to_pose(grasp_pos, grasp_ori)
+close_gripper()
+current_pos, current_ori = get_current_state()
+pull_pos = parse_pos(f"a point 20cm back to {current_pos}.")
+move_gripper_to_pose(pull_pos, current_ori)
+open_gripper()
+
+# Task: Pick up the cup.
+# Task-related knowledge: pickup_height
+pick_pos, pick_ori = get_task_pose("pick up the cup")
+open_gripper()
+move_gripper_to_pose(cup_pos, cup_ori)
+close_gripper()
+current_pos, current_ori = get_current_state()
+pickup_pos = parse_pos(f"a point {pickup_height} above to {current_pos}.")
+move_gripper_to_pose(pickup_pos, current_ori)
+
+# Task: Close the white drawer
+# Task-related knowledge: None
+close_pos, close_ori = get_task_pose("close the top cabinet")
+close_gripper()
+preclose_pos = parse_pos(f"a point 20cm backward to {close_pos}.")
+move_gripper_to_pose(preclose_pos, close_ori)
+current_pos, current_ori = get_current_state()
+push_pos = parse_pos(f"a point 20cm forward to {current_pos}.")
+move_gripper_to_pose(push_pos, current_ori)
+
+# Task: Place the fork on the top table.
+# Task-related knowledge: place_depth
+put_pos, put_ori = get_task_pose("place the fork on the top table")
+preput_pos = parse_pos(f"a point a bit up to {put_pos}")
+move_gripper_to_pose(preput_pos, put_ori)
+current_pos, current_ori = get_current_state()
+put_pos = parse_pos(f"a point {place_depth} to {current_pos}")
+move_gripper_to_pose(put_pos, current_ori)
+open_gripper()

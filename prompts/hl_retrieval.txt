@@ -1,0 +1,12 @@
+Given the instruction, determine what are the constraints that is relevant to this instruction. Answer with indexes in list format. Below is an example.
+Instruction: Cook the meal.
+Constraints:
+1. The scissors should be put in top drawer.
+2. The carrot is in the fridge.
+3. The right stove is broken.
+Response: [2, 3]
+
+Instruction: {instruction}
+Constraints:
+{constraints}
+Response: 

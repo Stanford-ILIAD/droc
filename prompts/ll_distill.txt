@@ -1,0 +1,130 @@
+A robot is doing a task, and a human is giving it feedback to help it complete the task correctly. 
+Your first task is to use the command 'save_information(info_name, info_value, response_round: int)' to store the correct value of "task-related knowledge".
+Your second task is to determine whether there are additional waypoints needed. To do this, you need to distinguish between positional adjustments and waypoints based on analyzing human's feedback.
+
+Below are some examples:
+Interaction history:
+'''
+Task: Insert the pen to the holder, with the pen already in hand.
+# Task-related knowledge: insertion_pos, insertion_ori, insertion_depth
+
+Response 1:
+'''
+insert_pos, insert_ori = get_task_pose("insert the pen to the holder")
+move_gripper_to_pose(insert_pos, insert_ori)
+current_pos, current_ori = get_current_state()
+movedown_pos = parse_pos(f"a point 5cm to {current_pos}.")
+move_gripper_to_pose(movedown_pos, current_ori)
+open_gripper()
+'''
+Outcome: Interrupted at codeline "move_gripper_to_pose(insert_pos, insert_ori)".
+Human feedback: move forward a bit
+
+Response to feedback 2:
+'''
+current_pos, current_ori = get_current_state()
+target_pos = parse_pos(f"a point a bit backward to {current_pos}")
+move_gripper_to_pose(target_pos, current_ori)
+
+'''
+Outcome: Done.
+Human feedback: move left and tilt up a little bit
+
+Response to feedback 3:
+'''
+current_pos, current_ori = get_current_state()
+target_pos = parse_pos(f"a point a little bit left to {current_pos}.")
+target_ori = parse_ori(f"tilt up a little bit relative to {current ori}.")
+move_gripper_to_pose(target_pos, target_ori)
+'''
+Outcome: Done.
+Human feedback: Tilt left a bit.
+
+Response to feedback 4:
+'''
+current_pos, current_ori = get_current_state()
+target_ori = parse_ori(f"tilt left a bit relative to {current ori}.")
+move_gripper_to_pose(current_pos, target_ori)
+'''
+Outcome: Done.
+Human feedback: Now put it down.
+
+Response to feedback 5:
+'''
+movedown_pos = parse_pos(f"a point 5cm to {current_pos}.")
+move_gripper_to_pose(movedown_pos, current_ori)
+open_gripper()
+'''
+Outcome: Done.
+Human feedback: Done.
+'''
+
+Your response:
+save_information("insertion_pos", current_pos, 4)
+save_information("insertion_ori", target_ori, 4)
+save_information("insertion_depth", "5cm", 5)
+Additional waypoint needed: None
+
+
+Interaction history:
+'''
+Task: Pick up the pen
+# Task-related knowledge: pickup_pos, pickup_ori, pickup_height
+
+Response 1:
+'''
+pickup_pos, pickup_ori = get_task_pose("pick up the pen")
+move_gripper_to_pose(pickup_pos, pickup_ori)
+close_gripper()
+current_pos, current_ori = get_current_state()
+moveup_pos = parse_pos(f"a point 5cm to {current_pos}.")
+move_gripper_to_pose(moveup_pos, current_ori)
+'''
+Outcome: Interrupted at codeline "move_gripper_to_pose(pickup_pos, pickup_ori)".
+Human feedback: move left and forward a bit
+
+Response to feedback 2:
+'''
+current_pos, current_ori = get_current_state()
+target_pos = parse_pos(f"a point a bit left and forward to {current_pos}")
+move_gripper_to_pose(target_pos, current_ori)
+'''
+Outcome: Done.
+Human feedback: Now pick it up
+
+Response to feedback 3:
+'''
+close_gripper()
+moveup_pos = parse_pos(f"a point 5cm to {current_pos}.")
+move_gripper_to_pose(moveup_pos, current_ori)
+'''
+Outcome: Done.
+Human feedback: flip the pen.
+'''
+
+Response to feedback 4:
+'''
+current_pos, current_ori = get_current_state()
+target_ori = parse_ori(f"rotate clockwise 180 degrees relative to {current_ori}")
+move_gripper_to_pose(current_pos, target_ori)
+'''
+Outcome: Done.
+Human feedback: Done.
+'''
+
+Your response:
+save_information("pickup_pos", target_pos, 2)
+save_information("pickup_ori", current_ori, 2)
+save_information("pickup_height", "5cm", 3)
+Additional waypoint needed: Yes. "Flip the pen"
+New code:
+'''
+pickup_pos, pickup_ori = get_task_pose("pick up the pen")
+move_gripper_to_pose(pickup_pos, pickup_ori)
+close_gripper()
+current_pos, current_ori = get_current_state()
+moveup_pos = parse_pos(f"a point 5cm to {current_pos}.")
+move_gripper_to_pose(moveup_pos, current_ori)
+target_ori = parse_ori(f"rotate clockwise 180 degrees relative to {current_ori}")
+move_gripper_to_pose(moveup_pos, target_ori)
+'''

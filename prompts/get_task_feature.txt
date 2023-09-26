@@ -1,0 +1,3 @@
+The information related to the task "open the top white drawer" is: grasp_pos, grasp_ori, pull_distance.
+The information related to the task "pick up the red pen" is: pick_pos, pick_ori, pickup_height
+The information related to the task "{}" is:

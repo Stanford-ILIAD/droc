@@ -1,0 +1,21 @@
+Please determine whether the given correction indicates there's an error beyond the task's scope.
+
+Task: open the top shelf
+Correction: move right a little bit
+Output: no
+
+Task: pick up the apple
+Correction: that's wrong. move left please
+Output: no
+
+Task: put the apple into the fridge
+Correction: you should open the fridge first
+Output: yes
+
+Task: open the fridge
+Correction: wrong detection
+Output: no
+
+Task: pick up the pen
+Correction: no, pick the red pen
+Output: yes

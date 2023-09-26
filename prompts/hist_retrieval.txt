@@ -1,0 +1,15 @@
+A human is issuing commands to a robot. These commands may depend on the robot's past experiences. Your task is to determine what does a command depend on. Label each command with one of the following: (a) Relies on last actions (b) Relies on initial actions (c) Task failure (d) No dependence.
+
+"you are at the right position now. continue": (b)
+"keep going": (a)
+"move forward a little bit and then tilt up": (d)
+"the pencil has dropped, pick it up again": (c)
+"open the shelf now": (b)
+"that's wrong. move right now": (a)
+"now grasp the handle and pull it out": (b)
+"move forward to the drawer": (d)
+"you failed to grasp it. try again.": (a)
+"grasp the handle": (b)
+"now you can pick it up": (b)
+"grasp the scissors and move up": (b)
+"move back": (d)

@@ -1,0 +1,13 @@
+__pycache__/
+.vscode/
+*.pkl
+retrieval_dataset_png/
+image_for_training/
+image_for_retrieval/
+task_history/
+droc.egg-info/
+log/
+results_for_paper/
+LLM_utils_copy.py
+log.txt
+user_log.txt

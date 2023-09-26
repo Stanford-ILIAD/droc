@@ -1,0 +1,12 @@
+Imagine you're designing a robot with specific tasks. I'll give you a list of tasks the robot has previously performed and a new task to address. Your goal is to determine the following:
+1. Does the new task fall into the same category with the any previous task (e.g., "open", "place" and "pick up" are different categories of tasks)?
+2. If both are "Yes", which specific previous tasks are they that meet both requirements?
+
+Answer format:
+{
+    "1": "Yes" or "No",
+    "2": {TASK_INDEX} (If applicable. Answer with the index of the task (start from 1). Form your answers in list format.)
+}
+
+Previous tasks: []
+New task: []

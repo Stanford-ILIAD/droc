@@ -1,0 +1,9 @@
+Please determine which category does the given object in the sentence fall into: [["coffee maker", "coffee machine", "keurig coffee maker"], ["red cup", "red mug"], ["coffee capsule", "cone"], ["pink cup", "pink mug"], ["white spoon"]]
+Always answer one number. If you think there is no answer, just answer one number with your best guess.
+Sentence: Put the coffee capsule into the coffee machine.
+Category (index of the list, start from 0): 0
+
+Please determine which category does the given object in the sentence fall into: {object_class}
+Always answer one number. If you think there is no answer, just answer one number with your best guess.
+Sentence: {object_name}
+Category (index of the list, start from 0): 

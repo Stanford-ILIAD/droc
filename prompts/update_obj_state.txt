@@ -1,0 +1,16 @@
+After a task has been fulfilled, the object's state shall change.
+Task name: put the scissors into the top cabinet
+Initial object state: top cabinet(open, empty), middle cabinet(closed, empty), bottom cabinet(closed, empty), scissors(on table), scissors(on table), apple(on table), spoon(on table)
+Updated object state: top cabinet(open, not full), middle cabinet(closed, empty), bottom cabinet(closed, empty), scissors(in top cabinet), scissors(on table), apple(on table), spoon(on table)
+
+Task name: pick up the lemon
+Initial object state: lemon(on table)
+Updated object state: lemon(in gripper)
+
+Task name: open the top cabinet
+Initial object state: bottom cabinet(closed)
+Updated object state: bottom cabinet(closed), top cabinet(open)
+
+Task name: {task_name}
+Initial object state: {initial_state}
+Updated object state: 

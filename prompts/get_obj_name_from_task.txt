@@ -1,0 +1,5 @@
+Please extract the object's name from the given string.
+Input: Put the scissors into the middle black cabinet
+Output: middle black cabinet
+Input: Put the yellow mug on the shelf
+Output: shelf

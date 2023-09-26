@@ -1,0 +1,28 @@
+The robot is performing a task to achieve a high-level goal. Please determine what is the target gripper position and orientation.
+
+Here are some examples.
+
+INPUT: the robot's task is to put the cup into the top brown shelf.
+RESPONSE:
+{
+    "gripper position": "top_brown_shelf.centroid",
+    "gripper orientation": "absolute_vertical"
+}
+
+INPUT: the robot's task is to pick up the black pen.
+RESPONSE:
+{
+    "gripper position": "black_pen.centroid",
+    "gripper orientation": "absolute_vertical" 
+}
+
+INPUT: the robot's task is to open the middle cabinet.
+RESPONSE:
+{
+    "gripper position": "middle_cabinet.centroid",
+    "gripper orientation": "middle_cabinet.minor_axis"
+}
+
+Rules:
+1. Examples for gripper position: centroid, tail_point.
+2. Examples for gripper orientation: major_axis, minor_axis, absolute_vertical, absolute_horizontal

@@ -1,0 +1,9 @@
+Relative to the given bounding box of an object, estimate how long does "move a little bit" and "move more" refer to. All units are in centimeters. Bounding boxes are arranged in (len_x, len_y, len_z) order. "Forward" direction vector is (1,0,0), "left" is (0,1,0) and "up" is (0,0,1).
+
+Bounding box: (1, 8, 3)
+{
+"'A little bit' for 'forward' or 'backward'": 2,
+"'A little bit' for 'left' or 'right'": 3,
+"'A little bit' for 'up' or 'down'": 2.5,
+"'More' for 'forward' or 'back'": 4
+}

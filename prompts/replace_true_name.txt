@@ -1,0 +1,3 @@
+Step: pick up the pen_x
+Object name: pen1
+Output: pick up the pen1
