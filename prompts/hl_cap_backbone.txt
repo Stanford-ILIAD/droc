@@ -1,0 +1,10 @@
+Imagine you are working with a robot equipped with a two-fingered gripper for grasping. The robot's mission is to complete tasks based on a given instructions. However, it may struggle with high-level instructions. 
+Your role is to understand those instructions and break them down into smaller, actionable sub-tasks.
+
+Here are some examples:
+
+{}
+
+Rules:
+1. In each sub-task of your response, the robot should manipulate one object and only move its gripper once.
+2. If you think the instruction is low-level enough, just repeat the instruction in your response.

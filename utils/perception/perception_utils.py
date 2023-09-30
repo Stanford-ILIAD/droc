@@ -724,7 +724,6 @@ def get_text_features(clip_candidates, clip_model):
         return text_features
 
 def clear_irrelavent_detections(parsed_obj_name):
-    # TODO: Use image-text sim to filter some detections
     pass
 
 # ---------------------------------- Get task pose ----------------------------------

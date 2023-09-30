@@ -1,0 +1,14 @@
+Instruction: put the apple in the fridge.
+Response:
+{
+  "1": "Open the fridge.",
+  "2": "Pick up the apple.",
+  "3": "Put apple into the fridge.",
+  "4": "Close the fridge."
+}
+
+Instruction: open the top white cabinet
+Response:
+{
+  "1": "Open the top white cabinet."
+}

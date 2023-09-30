@@ -4,13 +4,14 @@ import utils.perception.perception_utils
 from utils.modulable_prompt import modulable_prompt
 from utils.LLM_utils import query_LLM
 from utils.io.io_utils import read_py, USER_LOG, add_to_log
-from utils.perception.perception_utils import _parse_pos, _correct_past_detection, _get_grasp_pose, _get_task_detection, _change_reference_frame, initialize_detection, set_policy_and_task, clear_saved_detected_obj
+from utils.perception.perception_utils import _parse_pos, _correct_past_detection, _get_task_pose, _get_task_detection, _change_reference_frame, initialize_detection, set_policy_and_task, clear_saved_detected_obj
 from utils.string_utils import format_code, format_plan, extract_array_from_str, replace_strarray_with_str
 from utils.exception_utils import InterruptedByHuman, GraspError, RobotError, PlanningError, WrongDetection
 
-prompt_plan_instance = modulable_prompt('prompts/prompt_plan_backbone.txt', 'prompts/prompt_plan_content.txt')
-prompt_codepolicy_instance = modulable_prompt('prompts/prompt_codepolicy_backbone.txt', 'prompts/prompt_codepolicy_content.txt')
-prompt_correction_no_history = read_py('prompts/prompt_correction_no_history.txt')
+prompt_plan_instance = modulable_prompt('prompts/hl_cap_backbone.txt', 'prompts/hl_cap_content.txt')
+prompt_codepolicy_instance = modulable_prompt('prompts/ll_backbone.txt', 'prompts/ll_content.txt')
+prompt_correction_no_history = read_py('prompts/ll_corr_nohist.txt')
+prompt_parse_ori = read_py('prompts/parse_ori.py')
 gripper_opened = False
 
 # ------------------------------------------ Primitives ------------------------------------------
@@ -72,7 +73,6 @@ def parse_pos(pos_description, reference_frame='object'):
         return ret_val
 
 def parse_ori(ori_description):
-    prompt_parse_ori = read_py('prompts/prompt_parse_ori.py')
     ori_description = ori_description.split(' relative')[0]
     whole_prompt = prompt_parse_ori + '\n' + '\n' + f"# Query: {ori_description}" + "\n"
     response = query_LLM(whole_prompt, ["# Query:"], "cache/llm_response_parse_ori.pkl")
@@ -92,7 +92,7 @@ def delete_last_detection(obj_name, corrected_pos=None):
     _correct_past_detection(obj_name, corrected_pos)
 
 def get_task_pose(task):
-    pos, ori =  _get_grasp_pose(task, visualize=True)
+    pos, ori =  _get_task_pose(task, visualize=True)
     return pos, ori
 
 def get_task_detection(task):
@@ -126,6 +126,7 @@ def main():
 
         # Receive instructions and generate the initial plan
         li = input('\n\n\n' + "I'm ready to take instruction." + '\n' + 'Input your instruction:')
+        initialize_detection(first=True)
         prompt_plan = prompt_plan_instance.get_prompt()
         whole_prompt = prompt_plan + '\n' + '\n' + f"Instruction: {li}" + "\n"
         response = query_LLM(whole_prompt, ["Instruction:"], "cache/llm_response_planning_high.pkl")
@@ -201,11 +202,6 @@ def main():
                             _, code_as_policies = format_code(response)
                         except PlanningError as pe:
                             raise PlanningError(pe)
-                        # except Exception:
-                        #     _break = other_exception_handler(localss, locals, corr_rounds, li, step_name)
-                        #     if _break:
-                        #         break
-                        #     code_as_policies, corr_rounds = failure_reasoning(step_name)
                     add_to_log(f'********************Success! "{parsed_step_name}" is fulfilled !!!!!********************', also_print=True)
                 plan_success = True
             except PlanningError:
@@ -220,12 +216,8 @@ def main():
 if __name__ == '__main__':
     global policy, realrobot
     def delete_tmp():
-        with open('new_codeprompt.txt', 'w') as file:
-            file.write(prompt_codepolicy_instance.get_prompt())
-        with open('new_planprompt.txt', 'w') as file:
-            file.write(prompt_plan_instance.get_prompt())
+        pass
     atexit.register(delete_tmp)
-    user_id = 'lihan'
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", type=str, default='drawer')
     parser.add_argument("--realrobot", type=bool, default=False)
@@ -240,8 +232,8 @@ if __name__ == '__main__':
     else:
         from utils.robot.dummy_policy import DummyPolicy
         policy = DummyPolicy()
-    if os.path.exists(f"log/{task}/{user_id}/"):
+    if os.path.exists(f"log/{task}/"):
         pass
     else:
-        os.makedirs(f"log/{task}/{user_id}/")
+        os.makedirs(f"log/{task}/")
     main()
