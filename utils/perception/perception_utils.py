@@ -99,7 +99,7 @@ def set_policy_and_task(real_robot, task):
         import torch.nn.functional as F 
         policy = DummyPolicy()
 
-def initialize_detection(first=False, folder_path='cache/image_for_retrieval', image_pattern='*.png', label=['cup', 'drawer']):
+def initialize_detection(first=False, load_image=False, folder_path='cache/image_for_retrieval', image_pattern='*.png', label=['cup', 'drawer']):
     global load_detected_objs, saved_detected_obj, queried_obj, clip_model, clip_preprocess
     queried_obj = detected_object()
     if REAL_ROBOT:
@@ -119,35 +119,37 @@ def initialize_detection(first=False, folder_path='cache/image_for_retrieval', i
         if 'n' in a:
             saved_detected_obj = {}
         if first:
-            # if clip_model is None:
-            #     print("Loading CLIP...")
-            #     clip_model, _, clip_preprocess = open_clip.create_model_and_transforms('ViT-g-14', pretrained='laion2b_s34b_b88k')
-            # image_files = glob.glob(os.path.join(folder_path, image_pattern))
-            # img_dict = {}
-            # for l in label:
-            #     img_files = [file for file in image_files if l in os.path.basename(file).lower()]
-            #     img_files = sorted(img_files, key=lambda x: int(x.split(l)[1].split('.png')[0]))
-            #     img_dict[l] = img_files
-            # files = {}
-            # clip_model.to(device=device)
-            # for l in label:
-            #     img_files = img_dict[l]
-            #     all_img = []
-            #     _files = []
-            #     for file in img_files:
-            #         _files.append(file)
-            #         img = Image.open(file)
-            #         img = clip_preprocess(img).to(device)
-            #         all_img.append(img)
-            #     preprocessed_images = torch.stack(all_img)
-        
-            #     with torch.no_grad(), torch.cuda.amp.autocast():
-            #         image_features = clip_model.encode_image(preprocessed_images)
-            #     image_features = image_features.cpu().numpy()
-            #     img_dict[l] = image_features
-            #     files[l] = _files
-            # load_detected_objs = create_loaded_objs(img_dict)
-            load_detected_objs = create_loaded_objs(None)
+            if load_image:
+                # Only consider clip feature here
+                if clip_model is None:
+                    print("Loading CLIP...")
+                    clip_model, _, clip_preprocess = open_clip.create_model_and_transforms('ViT-g-14', pretrained='laion2b_s34b_b88k')
+                image_files = glob.glob(os.path.join(folder_path, image_pattern))
+                img_dict = {}
+                for l in label:
+                    img_files = [file for file in image_files if l in os.path.basename(file).lower()]
+                    img_files = sorted(img_files, key=lambda x: int(x.split(l)[1].split('.png')[0]))
+                    img_dict[l] = img_files
+                files = {}
+                clip_model.to(device=device)
+                for l in label:
+                    img_files = img_dict[l]
+                    all_img = []
+                    _files = []
+                    for file in img_files:
+                        _files.append(file)
+                        img = Image.open(file)
+                        img = clip_preprocess(img).to(device)
+                        all_img.append(img)
+                    preprocessed_images = torch.stack(all_img)    
+                    with torch.no_grad(), torch.cuda.amp.autocast():
+                        image_features = clip_model.encode_image(preprocessed_images)
+                    image_features = image_features.cpu().numpy()
+                    img_dict[l] = image_features
+                    files[l] = _files
+                load_detected_objs = create_loaded_objs(img_dict)
+            else:
+                load_detected_objs = create_loaded_objs(None)
         else:
             load_detected_objs = pickle.load(open(f"log/{TASK}/detected_objs.pkl", "rb"))
 
@@ -155,19 +157,21 @@ def create_loaded_objs(img_dict):
     considered_classes, _ = get_considered_classes()
     load_detected_objs = {}
     for cls in considered_classes:
-        obj_name = cls[0]
-        # if obj_name not in list(img_dict.keys()):
-        #     n = 3
-        #     for i in range(n):
-        #         obj = obj_name + f'_{i+1}'
-        #         load_detected_objs[obj] = (np.ones((10,3)), 0.5, np.ones(1024, dtype=np.float32))
-        # else:
-        #     image_feature = img_dict[obj_name]
-        #     n = len(image_feature)
-        #     for i in range(n):
-        #         obj = obj_name + f'_{i+1}'
-        #         load_detected_objs[obj] = (np.ones((n+2,3)), 0.5, image_feature[i])
-        load_detected_objs[obj_name] = [(np.ones((10,3)), 0.5, np.random.randn(1024),np.random.randn(512)), (np.ones((10,3)), 0.3, np.random.randn(1024),np.random.randn(512))]
+        if img_dict is None:
+            obj_name = cls[0]
+            load_detected_objs[obj_name] = [(np.ones((10,3)), 0.5, np.random.randn(1024),np.random.randn(512)), (np.ones((10,3)), 0.3, np.random.randn(1024),np.random.randn(512))]
+        else:
+            if obj_name not in list(img_dict.keys()):
+                n = 3
+                for i in range(n):
+                    obj = obj_name + f'_{i+1}'
+                    load_detected_objs[obj] = (np.ones((10,3)), 0.5, np.random.randn(1024),np.random.randn(512))
+            else:
+                image_feature = img_dict[obj_name]
+                n = len(image_feature)
+                for i in range(n):
+                    obj = obj_name + f'_{i+1}'
+                    load_detected_objs[obj] = (np.ones((n+2,3)), 0.5, image_feature[i], np.random.randn(512))
     pickle.dump(load_detected_objs, open(f"log/{TASK}/detected_objs.pkl", "wb"))
     return load_detected_objs
 
@@ -189,10 +193,6 @@ def get_initial_state():
 
 def get_considered_classes():
     if TASK == 'drawer':
-        # considered_classes = [["white drawer", "white drawer handle", "three-layer drawer"], ["deep gray drawer", "orange handle", "two-layer drawer", "leather"], \
-        #                       ["yellow pen", "yellow marker"], ["pink pen", "pink marker"], ["red cupy"], ["blue tape"], ["green tape"]]
-        # considered_classes = [["white drawer", "white drawer handle", "drawer knob", "knob"], ["deep gray drawer", "brown handle", "leather"], \
-        #                       ["yellow pen", "yellow marker"], ["pink pen", "pink marker"], ["red cup"], ["green tape"], ["black tape"], ["scissors", "scissors handle"]]
         considered_classes = [["drawer", "drawer handle"], ["pen"], ["cup", "mug"], ["tape"], ["scissors", "scissors handle"], ["apple"]]
         other_classes = [["table cloth", "wooden table", "wooden floor", "gray cloth", "gray background", "gray board"],["tripod"], ["unrecoginized object"]]
     elif TASK == 'coffee':
@@ -430,8 +430,6 @@ def detect(obj_name, visualize=False):
     global load_detected_objs, saved_detected_obj
 
     parsed_obj_name = parse_obj_name(obj_name)
-    # if parsed_obj_name != obj_name:
-    #     clear_irrelavent_detections(parsed_obj_name)
     obj_name = parsed_obj_name
 
     if load_detected_objs[obj_name] == [] or load_detected_objs[obj_name] is None:
@@ -723,9 +721,6 @@ def get_text_features(clip_candidates, clip_model):
         pickle.dump(text_features, open_file(f"cache/{TASK}/text_features.pkl", "wb"))
         return text_features
 
-def clear_irrelavent_detections(parsed_obj_name):
-    pass
-
 # ---------------------------------- Get task pose ----------------------------------
 
 def _get_task_pose(task_name, visualize=True):
@@ -931,12 +926,16 @@ def compare_text_image_sim(text, vis_feature):
     vis_feature = torch.tensor(vis_feature, device=device)
     if tokenizer is None:
         tokenizer = open_clip.get_tokenizer('ViT-g-14')
-    text = tokenizer(f"A photo of {text}.").to(device)
+    if clip_model is None:
+        clip_model, _, _ = open_clip.create_model_and_transforms('ViT-g-14', pretrained='laion2b_s34b_b88k')
+    clip_model = clip_model.to(device=device)
+    text = tokenizer(f"A photo of {text}.").to(device=device)
     with torch.no_grad(), torch.cuda.amp.autocast():
         text_feature = clip_model.encode_text(text).squeeze()
         text_feature /= text_feature.norm(dim=-1, keepdim=True)
         vis_feature /= vis_feature.norm(dim=-1, keepdim=True)
         raw_probs = vis_feature.dot(text_feature).item()
+    del clip_model
     return raw_probs
 
 def get_detected_feature():

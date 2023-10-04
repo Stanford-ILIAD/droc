@@ -354,7 +354,7 @@ def retrieve_plan_info(li):
         print('Planning-level retrieval: not retrieving anything...')
         return ([], None)
 
-def ground_plan(raw_plan_step, plan_related_info, obj_dict, obj_state, image_features):
+def ground_plan(raw_plan_step, plan_related_info, obj_dict, obj_state, image_features, threshold=3):
     grounded_plan = {}
     task_features = []
     for num, step in raw_plan_step.items():
@@ -368,7 +368,20 @@ def ground_plan(raw_plan_step, plan_related_info, obj_dict, obj_state, image_fea
                 task_features.append(None)
                 print(f"Replacing '{raw_step}' with '{grounded_plan[num]}'.")
             else:
-                raw_step, _ = step
+                raw_step, obj_names_dict = step
+                # Visual-semantic retrieval
+                query_text = list(obj_names_dict.keys())[0]
+                query_obj_name = get_query_obj(query_text)
+                if query_obj_name is not None:
+                    sims = []
+                    for feature in image_features:
+                        sim = compare_text_image_sim(query_obj_name, feature)
+                        sims.append(sim)
+                    prob_order = np.argsort(np.array(sims))[::-1]
+                    retrieved_idx = prob_order[:threshold]
+                    plan_related_info = plan_related_info[retrieved_idx]
+                    image_features = image_features[retrieved_idx]
+                # Visual-visual retrieval
                 task_feature = get_task_detection(raw_step)
                 sims = []
                 for feature in image_features:
@@ -488,11 +501,6 @@ def replan(corr_rounds, li, step_name, original_plan, object_state, plan_feature
     add_to_log(re_plan, also_print=False)
     delete_file(HISTORY_TMP_PATH)
     return re_plan, updated_object_state
-
-def update_object_state(obj_state, task_name):
-    new_obj_state = _update_object_state(obj_state, task_name)
-    prompt_plan_instance.set_object_state(new_obj_state)
-    return new_obj_state
 
 def retrieve_task_info(step_name):
     global rel_pos, rel_ori
@@ -627,6 +635,19 @@ def get_constraint_related_feature(constraint, plan_features):
     print(response.text)
     vis_idx = eval(response.text)[0]
     return plan_features[list(plan_features.keys())[vis_idx-1]]
+
+def get_query_obj(query_text):
+    prompt_get_query_obj = read_py('prompts/get_query_obj.txt')
+    prompt = prompt_get_query_obj + '\n' + f'Input: {query_text}' + '\n' + 'Output: '
+    response = query_LLM(prompt, [], 'cache/llm_get_query_obj.pkl')
+    ret_dict = eval(response.text)
+    query_obj = ret_dict['object_name_with_visual']
+    return query_obj
+
+def update_object_state(obj_state, task_name):
+    new_obj_state = _update_object_state(obj_state, task_name)
+    prompt_plan_instance.set_object_state(new_obj_state)
+    return new_obj_state
 
 if __name__ == '__main__':
     global policy, realrobot

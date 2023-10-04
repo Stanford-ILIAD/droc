@@ -1,7 +1,7 @@
-Please extract the object's name from the given string. Also extract the positional description if there is one.
-Input: Open the top white drawer.
-Output: ['white drawer', 'top']
-Input: Put the yellow mug on the shelf
-Output: ['shelf', None]
-Input: Put the scissors into the middle black cabinet
-Output: ['black cabinet', 'middle']
+Please extract the visual feature from the given object name. Also extract the positional description if there is one.
+Input: top white drawer
+Output: {'visual': 'white', 'positional': 'top', 'object_name_with_visual': 'white drawer'}
+Input: apple
+Output: {'visual': None, 'positional': None, 'object_name_with_visual': None}
+Input: big orange pie
+Output: {'visual': 'big orange', 'positional': None, 'object_name_with_visual': 'big orange pie'}
