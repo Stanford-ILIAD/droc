@@ -1,7 +1,7 @@
 # Distilling and Retrieving Generalizable Knowledge for Robot Manipulation via Language Corrections
 ## [<a href="https://sites.google.com/stanford.edu/droc" target="_blank">Project Page</a>][<a href="https://arxiv.org/abs/2311.10678">Paper</a>]
 
-![](https://github.com/lihzha/visualizations/blob/main/overview(twitter).gif)
+![til](https://github.com/lihzha/visualizations/blob/main/overview(twitter).gif)
 
 We propose a method for responding to online language corrections, distilling generalizable knowledge from them and retrieving useful knowledge for novel tasks, as described <a href="https://sites.google.com/stanford.edu/droc" target="_blank">here</a>.
 
