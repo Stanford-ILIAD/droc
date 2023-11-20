@@ -10,6 +10,7 @@ import math
 from utils.io.io_utils import open_file, delete_file, add_to_log, read_py
 from utils.transformation_utils import extract_z_axis
 from utils.LLM_utils import query_LLM
+import glob
 
 prompt_parse_pos = 'prompts/parse_pos.py'
 prompt_get_task_pose = read_py('prompts/get_task_pose_str.txt')
@@ -95,26 +96,21 @@ class detected_object:
 def set_policy_and_task(real_robot, task):
     global TASK, REAL_ROBOT, policy
     global torch, open_clip, F, pt_transforms, device
-    global SamAutomaticMaskGenerator, sam_model_registry, multi_cam, realsense_serial_numbers, clip_with_owl
+    global SamAutomaticMaskGenerator, sam_model_registry, clip_with_owl
     REAL_ROBOT = real_robot
     TASK = task   
+    import torch
+    from torchvision import transforms as pt_transforms
+    import torch.nn.functional as F
+    import open_clip
+    from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
+    from utils.perception.owl_vit import clip_with_owl
+    device = "cuda" if torch.cuda.is_available() else "cpu"    
     if REAL_ROBOT:
-        import torch
-        from torchvision import transforms as pt_transforms
-        import torch.nn.functional as F
-        import open_clip
-        from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
-        from utils.perception.shared_devices import multi_cam, realsense_serial_numbers
         import utils.robot.robot_policy as robot_policy
-        from utils.perception.owl_vit import clip_with_owl
-        policy = robot_policy.KptPrimitivePolicy(multi_cam)
-        device = "cuda" if torch.cuda.is_available() else "cpu"    
+        policy = robot_policy.KptPrimitivePolicy()
     else:
         from utils.robot.dummy_policy import DummyPolicy
-        import open_clip
-        import torch
-        from torchvision import transforms as pt_transforms
-        import torch.nn.functional as F 
         policy = DummyPolicy()
 
 def initialize_detection(first=False, load_image=False, folder_path='cache/image_for_retrieval', image_pattern='*.png', label=['cup', 'drawer']):
@@ -546,6 +542,8 @@ def detect_objs(load_from_cache=False, run_on_server=False, save_to_cache=True, 
         print("Computing point cloud...")
         init_time = time.time()
         used_camera_idx = 0
+        # TODO: use this after you implement utils/perception/camera.py
+        from utils.perception.camera import multi_cam
         bgr_images, pcd_merged, raw_points, _ = multi_cam.take_bgrd(visualize=visualize)
         image = bgr_images[realsense_serial_numbers[used_camera_idx]]
         coord2point_3d = raw_points[used_camera_idx]

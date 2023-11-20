@@ -1,10 +1,9 @@
 import time
 import numpy as np
 from utils.exception_utils import InterruptedByHuman, RobotError, GraspError
-from utils.robot.panda_env import PolymetisPandaEnv
-from muse.utils.transform_utils import *
+from utils.robot.panda_env import PandaPandaEnv
 from scipy.spatial.transform import Rotation
-from utils.transformation_utils import extract_z_axis
+from utils.transformation_utils import extract_z_axis, pose_to_mat, quat_to_euler, add_euler, euler_to_quat, quat_to_mat, mat_to_quat, mat_to_euler
 
 
 GRIPPER_SPEED, GRIPPER_FORCE, GRIPPER_MAX_WIDTH, GRIPPER_TOLERANCE = 0.1, 40, 0.08570, 0.01
@@ -26,9 +25,8 @@ def calculate_frame_quaternion(g_x, g_z):
     return frame_quaternion
 
 class KptPrimitivePolicy:
-    def __init__(self, multi_cam):
-        self.robot_env = PolymetisPandaEnv()
-        self.multi_cam = multi_cam
+    def __init__(self):
+        self.robot_env = PandaPandaEnv()
         self.robot_env.reset()
 
     def close_gripper(self, check_grasp=True):
@@ -79,9 +77,9 @@ class KptPrimitivePolicy:
                   [0, 0, 1]])
         pos = self.robot_env.robot.get_ee_pose()
         if quat is None:
-            t_bg = pose2mat((pos[0].cpu().numpy(), pos[1].cpu().numpy()))
+            t_bg = pose_to_mat((pos[0].cpu().numpy(), pos[1].cpu().numpy()))
         else:
-            t_bg = pose2mat((pos[0].cpu().numpy(), np.array(quat)))
+            t_bg = pose_to_mat((pos[0].cpu().numpy(), np.array(quat)))
         r_bg = t_bg[:3, :3]
         r_bd = r_bg @ r_gd
         r_bd = Rotation.from_matrix(r_bd)
@@ -89,11 +87,11 @@ class KptPrimitivePolicy:
         return q_b
 
     def tilt_leftright(self, degrees):
-        current_euler = fast_quat2euler(self.robot_env.robot.get_ee_pose()[1].numpy())
+        current_euler = quat_to_euler(self.robot_env.robot.get_ee_pose()[1].numpy())
         angle = np.radians(degrees)
         delta_euler = np.array((0., 0., angle))   # tilt_leftright rotate around absolute z-axis
         new_euler = add_euler(delta_euler, current_euler)
-        tar_quat = fast_euler2quat(new_euler)
+        tar_quat = euler_to_quat(new_euler)
         return tar_quat
 
     def tilt_updown(self, degrees=None):
@@ -123,16 +121,16 @@ class KptPrimitivePolicy:
             r_b = np.stack((g_x,g_y,g_z),axis=1)
             r_sb = r_b
             r_bs = r_sb.T
-            mat_g_in_s = quat2mat(self.robot_env.robot.get_ee_pose()[1].numpy())
+            mat_g_in_s = quat_to_mat(self.robot_env.robot.get_ee_pose()[1].numpy())
             mat_g_in_b = r_bs.dot(mat_g_in_s)
-            euler_g_in_b = mat2euler(mat_g_in_b)
+            euler_g_in_b = mat_to_euler(mat_g_in_b)
             angle = np.radians(degrees)
             delta_euler = np.array((angle, 0., 0.))   # tilt_updown rotate around gripper x-axis
             new_euler = add_euler(delta_euler, euler_g_in_b)
-            new_quat_g_in_b = fast_euler2quat(new_euler)
-            new_mat_g_in_b = quat2mat(new_quat_g_in_b)
+            new_quat_g_in_b = euler_to_quat(new_euler)
+            new_mat_g_in_b = quat_to_mat(new_quat_g_in_b)
             new_mat_g_in_s = r_sb.dot(new_mat_g_in_b)
-            tar_quat = mat2quat(new_mat_g_in_s)
+            tar_quat = mat_to_quat(new_mat_g_in_s)
         return tar_quat
 
     def align_z_axis_with_vector(self, z_axis, finger_plane='vertical'):
@@ -160,11 +158,11 @@ class KptPrimitivePolicy:
     def robot_fingertip_pos_to_ee(self, fingertip_pos, ee_quat):
         HOME_QUAT = np.array([ 0.9201814 , -0.39136365,  0.00602445,  0.00802529])
         FINGERTIP_OFFSET = np.array([0,0,-0.095])
-        home_euler = R.from_quat(HOME_QUAT).as_euler('zyx', degrees=True)
-        ee_euler = R.from_quat(ee_quat).as_euler('zyx', degrees=True)
+        home_euler = Rotation.from_quat(HOME_QUAT).as_euler('zyx', degrees=True)
+        ee_euler = Rotation.from_quat(ee_quat).as_euler('zyx', degrees=True)
         offset_euler = ee_euler - home_euler
         fingertip_offset_euler = offset_euler * [1,-1,1]
-        fingertip_transf = R.from_euler('zyx', fingertip_offset_euler, degrees=True)
+        fingertip_transf = Rotation.from_euler('zyx', fingertip_offset_euler, degrees=True)
         fingertip_offset = fingertip_transf.as_matrix() @ FINGERTIP_OFFSET
         fingertip_offset[2] -= FINGERTIP_OFFSET[2]
         ee_pos = fingertip_pos - fingertip_offset

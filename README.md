@@ -13,18 +13,14 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 ## Installation
 
-1. Create a virtual environment (this could take a while) and install the package:
+1. Create a virtual environment with Python=3.8 and install all the dependencies.
       ```bash
       conda create -n droc python==3.8
       pip install -r requirements.txt
       pip install -e .
       ```
 
-2. (Optional) Download <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">Polymetis</a> for real robot experiments. Note this only supports PyTorch ~= 1.12. If you are using new versions of PyTorch, please refer to the <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">monometis</a> fork from Hengyuan Hu.
-
-3. (Optional) Download <a href="https://github.com/Stanford-ILIAD/muse">muse</a> for real robot experiments.
-
-4. Set your OpenAI key in `utils/LLM_utils.py`.
+2. Set your OpenAI key in `utils/LLM_utils.py`.
 
 ## Code Structure
 
@@ -41,24 +37,42 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 ### Real robot experiments
 
-1. Calibrate the cameras and put the calibration results into `cache/calib`. Define your realsense serial numbers in `utils/perception/shared_devices.py`.
+Due to privacy issues, we will not be able to provide the codes for real robot control and perception. If you want to run real robot experiments, please implement these modules on yoursefl following the steps below:
 
-2. Define the task name and their clip candidates in `utils/perception/perception_utils.py`.
+1. Implement the enviroment for your robot (e.g., Franka Panda) in `utils/robot/panda_env.py`. You may use the functions defined in `utils/transformation_utils.py`.
 
-3. Run the main script.
+2. Implement the camera perception code in `utils/perception/camera.py`.
+
+3. Define the task name and their clip candidates in `utils/perception/perception_utils.py`.
+
+4. Run the main script.
       ```bash
-      python scripts/script.py --realrobot --task <task>
+      python scripts/script.py --realrobot True --task <task>
       ```
       where `<task>` is the name of the task to run.
 
 ### Dummy testing
-If you want to test your prompts, a better choice would be running your code in a dummy mode.
+If you only want to test your prompts, a better choice would be running your code in a dummy mode.
 ```bash
 python scripts/script.py --task <task>
 ```
 
+### Plan-level examples
+
+1. Define the task name and their clip candidates in `utils/perception/perception_utils.py`.
+
+2. Put all images for retrieval in `cache/image_for_retrieval`. Images should be named in the format of 'object_x.png', e.g., 'cup_1.png'.
+
+3. Run the following command.
+```bash
+python scripts/script.py --load_image True --task <task>
+```
+
+
+
+
 ## Troubleshooting
-Since the released implementation is primarily concered with real world robot experiments, there may be some unexpected bugs specific to indiviual use cases. If you meet any bug depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
+If you have any question about this repo or encounter any bug when depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
 
 
 ## Citation

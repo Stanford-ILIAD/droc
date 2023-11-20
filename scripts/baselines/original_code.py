@@ -596,8 +596,7 @@ if __name__ == '__main__':
     set_policy_and_task(realrobot, task)
     if realrobot:
         from utils.robot.robot_policy import KptPrimitivePolicy
-        from utils.vision.shared_devices import multi_cam
-        policy = KptPrimitivePolicy(multi_cam)
+        policy = KptPrimitivePolicy()
     else:
         from utils.robot.dummy_policy import DummyPolicy
         policy = DummyPolicy()
