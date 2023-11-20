@@ -13,7 +13,7 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 ## Installation
 
-1. Create a virtual environment Python=3.8 and install the dependencies:
+1. Create a virtual environment Python=3.8 and install the dependencies.
       ```bash
       conda create -n droc python==3.8
       pip install -r requirements.txt
