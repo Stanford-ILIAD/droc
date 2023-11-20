@@ -56,7 +56,7 @@ python scripts/script.py --task <task>
 ```
 
 ## Troubleshooting
-Since the released implementation is primarily concered with real world robot experiments, there may be some unexpected bugs specific to indiviual use cases. If you meet any bug depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
+Since the released implementation is primarily concered with real world robot experiments, there may be some unexpected bugs specific to individual use cases. If you meet any bug depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
 
 
 ## Citation
