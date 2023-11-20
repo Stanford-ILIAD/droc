@@ -37,7 +37,7 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 ### Real robot experiments
 
-Due to privacy issues, we will not be able to provide the codes for real robot control and perception. If you want to run real robot experiments, please implement these modules on yoursefl following the steps below:
+Due to privacy issues, we will not be able to provide the codes for real robot control and perception. If you want to run real robot experiments, please implement these modules on yourself following these steps:
 
 1. Implement the enviroment for your robot (e.g., Franka Panda) in `utils/robot/panda_env.py`. You may use the functions defined in `utils/transformation_utils.py`.
 
@@ -64,15 +64,13 @@ python scripts/script.py --task <task>
 2. Put all images for retrieval in `cache/image_for_retrieval`. Images should be named in the format of 'object_x.png', e.g., 'cup_1.png'.
 
 3. Run the following command.
-```bash
-python scripts/script.py --load_image True --task <task>
-```
-
-
+      ```bash
+      python scripts/script.py --load_image True --task <task>
+      ```
 
 
 ## Troubleshooting
-If you have any question about this repo or encounter any bug when depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
+If you have any question about this repo, or encounter any bug when depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
 
 
 ## Citation
