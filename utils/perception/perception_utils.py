@@ -33,6 +33,24 @@ REAL_ROBOT = None
 policy = None
 clip_model = None
 
+def get_considered_classes():
+    if TASK == 'drawer':
+        considered_classes = [["drawer", "drawer handle"], ["pen"], ["cup", "mug"], ["tape"], ["scissors", "scissors handle"], ["apple"]]
+        other_classes = [["table cloth", "wooden table", "wooden floor", "gray cloth", "gray background", "gray board"],["tripod"], ["unrecoginized object"]]
+    elif TASK == 'coffee':
+        considered_classes = [["coffee maker", "coffee machine", "keurig coffee maker"], ["red cup", "red mug"], ["coffee capsule", "cone"], ["pink cup", "pink mug"], ["white spoon"]]
+        other_classes = [["unrecognizable object"], ["robot arm"], ["table cloth"], ["work surface"], ["tripod"]]
+    elif TASK == 'cup':
+        considered_classes = [["pink cup"], ["green cup", "blue cup"], ["gray rack", "gray oval object"]]
+        other_classes = [["robot arm"], ["table cloth"], ["work surface"], ["tripod"]]
+    elif TASK == 'lego':
+        considered_classes = [["white drawer", "white drawer handle"], ["red block"], ["yellow block"], ["blue block"]]
+        other_classes = [["robot arm"], ["table cloth"], ["work surface"], ["tripod"]]
+    else:
+        raise NotImplementedError
+    return considered_classes, other_classes
+
+
 class ToScaledFloat:
     """
     Convert a ``PIL Image`` or ``numpy.ndarray`` to tensor, or keep as is if already a tensor.
@@ -190,23 +208,6 @@ def get_initial_state():
     # initial_state = response.text
     initial_state = 'Object state: N/A'
     return initial_state
-
-def get_considered_classes():
-    if TASK == 'drawer':
-        considered_classes = [["drawer", "drawer handle"], ["pen"], ["cup", "mug"], ["tape"], ["scissors", "scissors handle"], ["apple"]]
-        other_classes = [["table cloth", "wooden table", "wooden floor", "gray cloth", "gray background", "gray board"],["tripod"], ["unrecoginized object"]]
-    elif TASK == 'coffee':
-        considered_classes = [["coffee maker", "coffee machine", "keurig coffee maker"], ["red cup", "red mug"], ["coffee capsule", "cone"], ["pink cup", "pink mug"], ["white spoon"]]
-        other_classes = [["unrecognizable object"], ["robot arm"], ["table cloth"], ["work surface"], ["tripod"]]
-    elif TASK == 'cup':
-        considered_classes = [["pink cup"], ["green cup", "blue cup"], ["gray rack", "gray oval object"]]
-        other_classes = [["robot arm"], ["table cloth"], ["work surface"], ["tripod"]]
-    elif TASK == 'lego':
-        considered_classes = [["white drawer", "white drawer handle"], ["red block"], ["yellow block"], ["blue block"]]
-        other_classes = [["robot arm"], ["table cloth"], ["work surface"], ["tripod"]]
-    else:
-        raise NotImplementedError
-    return considered_classes, other_classes
 
 def get_extra_classes():
     if TASK == 'drawer':
@@ -1037,29 +1038,6 @@ def segment_image(image):
 def save_current_image(directory_path, visualize=False):
     if REAL_ROBOT:
         pass
-    '''
-    if REAL_ROBOT:
-        bgr_images, pcd_merged, _, _ = multi_cam.take_bgrd(visualize)
-            all_files = os.listdir(directory_path)
-            txt_files = [file for file in all_files if file.endswith('.txt')]
-            if len(txt_files) == 0:
-                with open(directory_path+'/'+'0.txt', 'w'):
-                    pass
-                idx = 0
-            elif len(txt_files) == 1:
-                idx = txt_files[0].split('.txt')[0]
-                idx = int(idx)
-            else:
-                pass
-            #raise NotImplementedError
-            for num in realsense_serial_numbers:
-                cv2.imwrite(directory_path+'/'+f'{num}_{idx}.png', bgr_images[num])
-            o3d.io.write_point_cloud(directory_path+f"/pcd_merged_{idx}.pcd", pcd_merged)
-            idx += 1
-            os.rename(directory_path+'/'+f'{idx-1}.txt', directory_path+'/'+f'{idx}.txt')
-    else:
-        pass
-    '''
 
 def test_image(text):
     clip_model, _, clip_preprocess = open_clip.create_model_and_transforms('ViT-g-14', pretrained='laion2b_s34b_b88k')
@@ -1079,7 +1057,3 @@ def test_image(text):
         raw_probs = i.dot(text_feature).item()
         print(raw_probs)
     return raw_probs
-
-if __name__ == '__main__':
-    TASK = 'drawer'
-    detect_objs('lihan', load_from_cache=False, save_to_cache=True, visualize=True)

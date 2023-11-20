@@ -43,18 +43,10 @@ class MarkSearch:
 
             return (u,v), image
 
-            #topRight = (int(topRight[0]), int(topRight[1]))
-            #bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
-            #bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
-            #topLeft = (int(topLeft[0]), int(topLeft[1]))
 
 class RealsenseStreamer():
     def __init__(self, serial_no=None):
 
-        # LEFT SERIAL NO: 145422071576
-        # RIGHT SERIAL NO: 241222076578
-
-        # Configure depth and color streams
         self.pipeline = rs.pipeline()
         self.config = rs.config()
 
@@ -144,15 +136,4 @@ class RealsenseStreamer():
         cv2.imshow('img', image)
         cv2.waitKey(0)
 
-if __name__ == '__main__':
-    #realsense_streamer = RealsenseStreamer()
-    #realsense_streamer = RealsenseStreamer('145422071576')
-    realsense_streamer = RealsenseStreamer('241222076578')
-    marker_search = MarkSearch()
-
-    frames = []
-    while True:
-        _, rgb_image, depth_frame, depth_img = realsense_streamer.capture_rgbd()
-        cv2.imshow('img', np.hstack((depth_img, rgb_image)))
-        cv2.waitKey(1)
 

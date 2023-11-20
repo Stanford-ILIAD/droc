@@ -14,7 +14,6 @@ from muse.utils.transform_utils import fast_euler2quat as euler2quat, fast_quat2
 from muse.utils.transform_utils import *
         
 
-
 # Libfranka Constants
 #   > Ref: Gripper constants from: https://frankaemika.github.io/libfranka/grasp_object_8cpp-example.html
 GRIPPER_SPEED, GRIPPER_FORCE, GRIPPER_MAX_WIDTH, GRIPPER_TOLERANCE = 0.08, 0.1, 0.0850, 0.01

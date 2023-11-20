@@ -150,11 +150,3 @@ def clip_with_owl(image, num_objs, sam, obj_name='drawer', visualize=True):
         # ret_points.append(p3d[int((cy-h/2)*h_ratio): int((cy+h/2)*h_ratio), int((cx-w/2)*w_ratio): int((cx+w/2)*w_ratio)])
 
     return masks, ret_boxes
-
-if __name__ == '__main__':
-
-    import cv2
-    image = cv2.imread('/scr/lihan/llm_correction/2023-08-27-142806.jpg')
-    print(image.shape)
-    p3d = clip_with_owl(image, None, 'scissors')
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
