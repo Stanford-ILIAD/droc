@@ -24,13 +24,13 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 ## Code Structure
 
-* **Scripts**: Contains the main script and all baseline scripts.
+* **scripts**: Contains the main script and all baseline scripts.
 
-* **Prompts**: All LLM prompts are stored in the folder `prompts/`. For the function of each prompt, please refer to [here](https://github.com/Stanford-ILIAD/droc/tree/main/prompts/prompt_overview.md).
+* **prompts**: Contains all LLM prompts. For the function of each prompt, please refer to [here](https://github.com/Stanford-ILIAD/droc/tree/main/prompts/prompt_overview.md).
 
-* **Utils**: Contains all utilities for running the main script, including I/O, perception, robot control, LLM, exception handling, etc.
+* **utils**: Contains all utilities for running the main script, including I/O, perception, robot control, LLM, exception handling, etc.
 
-* **Cache**: Contains the knowledge base (in .pkl format), calibration results, detection results and other caches.
+* **cache**: Contains the knowledge base (in .pkl format), calibration results, detection results and other caches.
 
 
 ## Usage
@@ -43,7 +43,7 @@ Due to privacy issues, we will not be able to provide the codes for real robot c
 
 2. Implement the camera perception code in `utils/perception/camera.py`.
 
-3. Define the task name and their clip candidates in `utils/perception/perception_utils.py`.
+3. Define the task name and the corresponding clip candidates in `utils/perception/perception_utils.py`.
 
 4. Run the main script.
       ```bash
@@ -59,7 +59,7 @@ python scripts/script.py --task <task>
 
 ### Plan-level examples
 
-1. Define the task name and their clip candidates in `utils/perception/perception_utils.py`.
+1. Define the task name and the corresponding clip candidates in `utils/perception/perception_utils.py`.
 
 2. Put all images for retrieval in `cache/image_for_retrieval`. Images should be named in the format of 'object_x.png', e.g., 'cup_1.png'.
 
