@@ -3,7 +3,6 @@ __pycache__/
 *.pkl
 retrieval_dataset_png/
 image_for_training/
-image_for_retrieval/
 task_history/
 droc.egg-info/
 log/
