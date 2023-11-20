@@ -15,13 +15,16 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 1. Create a virtual environment (this could take a while) and install the package:
       ```bash
-      conda env create -f environment.yml
+      conda create -n droc python==3.8
+      pip install -r requirements.txt
       pip install -e .
       ```
 
 2. (Optional) Download <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">Polymetis</a> for real robot experiments. Note this only supports PyTorch ~= 1.12. If you are using new versions of PyTorch, please refer to the <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">monometis</a> fork from Hengyuan Hu.
 
-3. Set your OpenAI key in `utils/LLM_utils.py`.
+3. (Optional) Download <a href="https://github.com/Stanford-ILIAD/muse">muse</a> for real robot experiments.
+
+4. Set your OpenAI key in `utils/LLM_utils.py`.
 
 ## Code Structure
 
@@ -53,6 +56,10 @@ If you want to test your prompts, a better choice would be running your code in 
 ```bash
 python scripts/script.py --task <task>
 ```
+
+## Troubleshooting
+Since the released implementation is primarily concered with real world robot experiments, there may be some unexpected bugs specific to indiviual use cases. If you meet any bug depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
+
 
 ## Citation
 

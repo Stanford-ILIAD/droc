@@ -9,7 +9,7 @@ import os
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 from utils.calib_utils.solver import Solver
-from utils.vision.rs_streamer import RealsenseStreamer, MarkSearch
+from utils.perception.rs_streamer import RealsenseStreamer, MarkSearch
 import open3d as o3d
 from polymetis import RobotInterface
 

@@ -1,0 +1,8 @@
+openai==0.28
+git+https://github.com/facebookresearch/segment-anything.git
+open_clip_torch
+mediapipe
+pyrealsense2
+imageio
+open3d
+gym

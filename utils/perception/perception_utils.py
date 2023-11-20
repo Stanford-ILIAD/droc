@@ -104,7 +104,7 @@ def set_policy_and_task(real_robot, task):
         import torch.nn.functional as F
         import open_clip
         from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
-        from utils.vision.shared_devices import multi_cam, realsense_serial_numbers
+        from utils.perception.shared_devices import multi_cam, realsense_serial_numbers
         import utils.robot.robot_policy as robot_policy
         from utils.perception.owl_vit import clip_with_owl
         policy = robot_policy.KptPrimitivePolicy(multi_cam)
