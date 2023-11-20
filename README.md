@@ -26,7 +26,7 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 * **Scripts**: Contains the main script and all baseline scripts.
 
-* **Prompts**: All LLM prompts are stored in the folder `prompts/`. For the function of each prompt, please refer to [here](https://github.com/Stanford-ILIAD/droc/tree/main/prompts/prompt_overview.txt).
+* **Prompts**: All LLM prompts are stored in the folder `prompts/`. For the function of each prompt, please refer to [here](https://github.com/Stanford-ILIAD/droc/tree/main/prompts/prompt_overview.md).
 
 * **Utils**: Contains all utilities for running the main script, including I/O, perception, robot control, LLM, exception handling, etc.
 
