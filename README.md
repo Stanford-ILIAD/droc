@@ -22,9 +22,7 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 2. (Optional) Download <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">Polymetis</a> for real robot experiments. Note this only supports PyTorch ~= 1.12. If you are using new versions of PyTorch, please refer to the <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">monometis</a> fork from Hengyuan Hu.
 
-3. (Optional) Download <a href="https://github.com/Stanford-ILIAD/muse">muse</a> for real robot experiments.
-
-4. Set your OpenAI key in `utils/LLM_utils.py`.
+3. Set your OpenAI key in `utils/LLM_utils.py`.
 
 ## Code Structure
 
