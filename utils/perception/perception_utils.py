@@ -52,7 +52,6 @@ def get_considered_classes():
         raise NotImplementedError
     return considered_classes, other_classes
 
-
 class ToScaledFloat:
     """
     Convert a ``PIL Image`` or ``numpy.ndarray`` to tensor, or keep as is if already a tensor.
