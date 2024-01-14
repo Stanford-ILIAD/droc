@@ -61,7 +61,7 @@ python scripts/script.py --task <task>
 
 1. Define the task name and the corresponding clip candidates in `utils/perception/perception_utils.py`.
 
-2. Put all images for retrieval in `cache/image_for_retrieval`. Images should be named in the format of 'object_x.png', e.g., 'cup_1.png'.
+2. Put all images for retrieval in `cache/image_for_retrieval`. Images should be named in the format of '{object}_x.png', e.g., 'cup_1.png'.
 
 3. Run the following command.
       ```bash

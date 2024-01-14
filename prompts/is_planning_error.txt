@@ -4,7 +4,7 @@ Task: open the top shelf
 Correction: move right a little bit
 Output: no
 
-Task: pick up the apple
+Task: pick up the apple.
 Correction: that's wrong. move left please
 Output: no
 
