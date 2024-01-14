@@ -37,7 +37,7 @@ For more details please refer to our [paper](https://arxiv.org/abs/2311.10678).
 
 ### Real robot experiments
 
-Due to privacy issues, we will not be able to provide the codes for real robot control and perception. If you want to run real robot experiments, please implement these modules on yourself following these steps:
+Our real robot experiments are based on [Polymetis](https://github.com/facebookresearch/fairo/tree/main/polymetis). However, this only supports PyTorch ~= 1.12. If you are using new versions of PyTorch, please refer to the [monometis](https://github.com/hengyuan-hu/monometis) fork from Hengyuan Hu. Due to privacy issues, we are not be able to release the codes for real robot control and perception. To run real robot experiments, please implement these modules on your own following the steps below:
 
 1. Implement the enviroment for your robot (e.g., Franka Panda) in `utils/robot/panda_env.py`. You may use the functions defined in `utils/transformation_utils.py`.
 
