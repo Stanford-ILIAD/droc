@@ -152,7 +152,7 @@ def execute_post_action(step_name):
 
 # ------------------------------------------ Main function ------------------------------------------
 
-def main():
+def main(args):
     global corr_rounds, use_interrupted_code, gripper_opened
 
     # Infinite outmost loop
@@ -161,7 +161,7 @@ def main():
         li = input('\n\n\n' + "I'm ready to take instruction." + '\n' + 'Input your instruction:')
 
         # Get initial objects and their states
-        initialize_detection(first=True)
+        initialize_detection(first=True, load_image=args.load_image)
         obj_state = get_initial_state()
         obj_dict = get_objs()
         print(obj_state)
@@ -661,14 +661,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", type=str, default='drawer')
     parser.add_argument("--realrobot", type=bool, default=False)
+    parser.add_argument("--load_image", type=bool, default=False)
     args = parser.parse_args()
     task = args.task
     realrobot = args.realrobot
     set_policy_and_task(realrobot, task)
     if realrobot:
         from utils.robot.robot_policy import KptPrimitivePolicy
-        from utils.perception.shared_devices import multi_cam
-        policy = KptPrimitivePolicy(multi_cam)
+        policy = KptPrimitivePolicy()
     else:
         from utils.robot.dummy_policy import DummyPolicy
         policy = DummyPolicy()
@@ -676,4 +676,4 @@ if __name__ == '__main__':
         pass
     else:
         os.makedirs(f"log/{task}/")
-    main()
+    main(args)

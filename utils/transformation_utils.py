@@ -65,3 +65,62 @@ def get_real_pose(pos, ori, rel_pos, rel_ori):
     real_ori = r_to_quat(real_r)
     real_pos = pos + rel_pos
     return (real_pos, real_ori)
+
+def pose_to_mat(pose):
+    homo_pose_mat = np.zeros((4, 4), dtype=np.float32)
+    homo_pose_mat[:3, :3] = quat2mat(pose[1])
+    homo_pose_mat[:3, 3] = np.array(pose[0], dtype=np.float32)
+    homo_pose_mat[3, 3] = 1.
+    return homo_pose_mat
+    
+def quat_to_euler(quat):
+    assert quat.shape[-1] == 4
+    x, y, z, w = quat[..., 0], quat[..., 1], quat[..., 2], quat[..., 3]
+    ysqr = y * y
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + ysqr)
+    X = np.arctan2(t0, t1)
+    t2 = +2.0 * (w * y - z * x)
+    t2 = np.clip(t2, a_min=-1.0, a_max=1.0)
+    Y = np.arcsin(t2)
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (ysqr + z * z)
+    Z = np.arctan2(t3, t4)
+    return np.stack([X, Y, Z], axis=-1)
+    
+def add_euler(delta, source, degrees=False):
+    delta_rot = R.from_euler('xyz', delta, degrees=degrees)
+    source_rot = R.from_euler('xyz', source, degrees=degrees)
+    new_rot = delta_rot * source_rot
+    return new_rot.as_euler('xyz', degrees=degrees)
+
+def euler_to_quat(euler):
+    roll, pitch, yaw = euler
+    qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+    qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+    qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+    qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+    
+    return [qx, qy, qz, qw]
+
+def quat_to_mat(euler):
+    return R.from_euler("xyz", euler).as_quat()
+
+def mat_to_quat(mat):
+    return R.from_matrix(mat).as_quat()
+
+def mat_to_euler(mat):
+    return T.rmat_to_euler(mat, 'XYZ')
+
+def quat_multiply(quat0, quat1):
+    x0, y0, z0, w0 = np.split(quat0, 4, axis=-1)  # (..., 1) for each
+    x1, y1, z1, w1 = np.split(quat1, 4, axis=-1)
+    return np.concatenate(
+        [
+            x1 * w0 + y1 * z0 - z1 * y0 + w1 * x0,  # (..., 1)
+            -x1 * z0 + y1 * w0 + z1 * x0 + w1 * y0,
+            x1 * y0 - y1 * x0 + z1 * w0 + w1 * z0,
+            -x1 * x0 - y1 * y0 - z1 * z0 + w1 * w0,
+        ],
+        axis=-1
+    )
