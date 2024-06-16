@@ -11,6 +11,7 @@ from utils.io.io_utils import open_file, delete_file, add_to_log, read_py
 from utils.transformation_utils import extract_z_axis
 from utils.LLM_utils import query_LLM
 import glob
+from utils.perception.camera import realsense_serial_numbers
 
 prompt_parse_pos = 'prompts/parse_pos.py'
 prompt_get_task_pose = read_py('prompts/get_task_pose_str.txt')
@@ -50,7 +51,6 @@ def get_considered_classes():
     else:
         raise NotImplementedError
     return considered_classes, other_classes
-
 
 class ToScaledFloat:
     """
@@ -167,7 +167,7 @@ def initialize_detection(first=False, load_image=False, folder_path='cache/image
         else:
             load_detected_objs = pickle.load(open(f"log/{TASK}/detected_objs.pkl", "rb"))
 
-def create_loaded_objs(img_dict):
+def create_loaded_objs(img_dict=None):
     considered_classes, _ = get_considered_classes()
     load_detected_objs = {}
     for cls in considered_classes:
@@ -177,15 +177,15 @@ def create_loaded_objs(img_dict):
         else:
             if obj_name not in list(img_dict.keys()):
                 n = 3
+                load_detected_objs[obj_name] = []
                 for i in range(n):
-                    obj = obj_name + f'_{i+1}'
-                    load_detected_objs[obj] = (np.ones((10,3)), 0.5, np.random.randn(1024),np.random.randn(512))
+                    load_detected_objs[obj_name].append((np.ones((10,3)), 0.5, np.random.randn(1024),np.random.randn(512)))
             else:
                 image_feature = img_dict[obj_name]
                 n = len(image_feature)
+                load_detected_objs[obj_name] = []
                 for i in range(n):
-                    obj = obj_name + f'_{i+1}'
-                    load_detected_objs[obj] = (np.ones((n+2,3)), 0.5, image_feature[i], np.random.randn(512))
+                    load_detected_objs[obj_name].append((np.ones((n+2,3)), 0.5, image_feature[i], np.random.randn(512)))
     pickle.dump(load_detected_objs, open(f"log/{TASK}/detected_objs.pkl", "wb"))
     return load_detected_objs
 
@@ -1055,3 +1055,7 @@ def test_image(text):
         raw_probs = i.dot(text_feature).item()
         print(raw_probs)
     return raw_probs
+
+
+if __name__ == '__main__':
+    print(1)

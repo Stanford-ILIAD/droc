@@ -1,7 +1,7 @@
 import time
 import numpy as np
 from utils.exception_utils import InterruptedByHuman, RobotError, GraspError
-from utils.robot.panda_env import PandaPandaEnv
+from utils.robot.panda_env import PandaEnv
 from scipy.spatial.transform import Rotation
 from utils.transformation_utils import extract_z_axis, pose_to_mat, quat_to_euler, add_euler, euler_to_quat, quat_to_mat, mat_to_quat, mat_to_euler
 
@@ -26,7 +26,7 @@ def calculate_frame_quaternion(g_x, g_z):
 
 class KptPrimitivePolicy:
     def __init__(self):
-        self.robot_env = PandaPandaEnv()
+        self.robot_env = PandaEnv()
         self.robot_env.reset()
 
     def close_gripper(self, check_grasp=True):
