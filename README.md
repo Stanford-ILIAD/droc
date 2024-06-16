@@ -20,7 +20,10 @@ For more details, please refer to our [paper](https://arxiv.org/abs/2311.10678).
       pip install -e .
       ```
 
-2. Set your OpenAI key in `utils/LLM_utils.py`.
+2. (Optional) Download <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">Polymetis</a> for real robot experiments. Note this only supports PyTorch ~= 1.12. If you are using new versions of PyTorch, please refer to the <a href="https://github.com/facebookresearch/fairo/tree/main/polymetis">monometis</a> fork from Hengyuan Hu.
+
+3. Set your OpenAI key in `utils/LLM_utils.py`.
+
 
 ## Code Structure
 
@@ -70,7 +73,9 @@ python scripts/script.py --task <task>
 
 
 ## Troubleshooting
-If you have any questions about this repo or encounter any bugs when deploying this codebase, feel free to contact <lihanzha20@gmail.com>.
+
+Since the released implementation is primarily concered with real world robot experiments, there may be some unexpected bugs specific to individual use cases. If you meet any bug depolying this codebase, feel free to contact <lihanzha20@gmail.com>.
+
 
 
 ## Citation
